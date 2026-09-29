@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign in — Recall</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="theme.js"></script>
+<style>
+  @keyframes pulseGlow { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:.65;transform:scale(1.05)} }
+  .pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
+</style>
+</head>
+<body data-auth="guest" class="bg-surface text-on-surface antialiased selection:bg-primary selection:text-on-primary min-h-screen relative overflow-x-hidden font-body-md text-body-md">
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+  <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-primary/10 rounded-full blur-[140px] pulse-glow"></div>
+  <div class="absolute top-[35%] -left-32 w-[550px] h-[450px] bg-secondary-container/15 rounded-full blur-[130px]"></div>
+  <div class="absolute top-[65%] -right-32 w-[600px] h-[500px] bg-primary-container/10 rounded-full blur-[140px]"></div>
+</div>
+
+<header class="bg-surface/80 backdrop-blur-md text-primary fixed z-50 border-b border-outline-variant/30 w-full">
+  <div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+    <a class="text-headline-md font-headline-md text-on-surface tracking-tight flex items-center gap-2 group" href="index.html">
+      <img alt="Recall Brand Logo" class="w-8 h-8 rounded-lg object-contain border border-outline-variant/40 group-hover:border-primary transition-colors" src="https://lh3.googleusercontent.com/aida/AEtjO1UADCkZu2Po5obfV2Bd3Bf97v35CsEBbYdhmI5Uu_FUhDty4HE6zSLLSgvWo-jn-rukqDnNiPiuZf_UeS-DBZXPcJTqU9RgHVoSlraXN_1MGEX9xRirf7iYR4jiUcvN2dq8J1vIazjmZIUcsfZDDc_q4vZ7XADcWGTP93YVEzkGx1k_WwWmXTj-_BB4S-8y7rS4GDoellqrrpX6YEA_KhSA-5pSHzcEOFKV29FLrYKWRIXb_vZZgif1K-nd"/>
+      <span class="tracking-tight text-on-surface">Recall</span>
+      <span class="font-label-code text-label-code bg-surface-container-high px-1.5 py-0.5 rounded border border-outline-variant/30 text-primary">v0.9</span>
+    </a>
+    <div class="flex items-center gap-3">
+      <a class="font-body-sm text-body-sm px-4 py-2 rounded-lg bg-surface-container-high text-on-surface border border-outline-variant/50 hover:border-primary-container transition-all active:scale-95 flex items-center gap-1.5" href="index.html">
+        <span class="material-symbols-outlined text-body-sm text-primary">arrow_back</span>
+        <span class="font-medium">Back to home</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="relative z-10 min-h-screen flex items-center justify-center px-6 pt-28 pb-16">
+  <div class="w-full max-w-md">
+    <div class="relative bg-gradient-to-b from-surface-container-high/80 to-surface-container-lowest border border-outline-variant/40 rounded-2xl p-8 shadow-2xl backdrop-blur-xl overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none"><div class="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-primary/10 rounded-full blur-[90px]"></div></div>
+      <div class="relative z-10">
+        <div class="font-label-code text-label-code text-primary tracking-widest uppercase mb-3" id="eyebrow">WELCOME BACK</div>
+        <h1 class="text-headline-xl-mobile font-headline-xl-mobile md:text-headline-xl md:font-headline-xl text-on-surface tracking-tight mb-2" id="title">Sign in to Recall</h1>
+        <p class="text-body-md font-body-md text-on-surface-variant mb-6" id="subtitle">Pick up where your engineering memory left off.</p>
+
+        <div class="grid grid-cols-2 gap-1 p-1 bg-surface-container-lowest border border-outline-variant/40 rounded-lg mb-6 font-label-ui text-label-ui">
+          <button type="button" id="tab-login" class="py-2 rounded-lg transition-all">Sign in</button>
+          <button type="button" id="tab-signup" class="py-2 rounded-lg transition-all">Create account</button>
+        </div>
+
+        <form id="auth-form" class="space-y-4" novalidate>
+          <div id="name-wrap" class="hidden">
+            <label class="block font-label-ui text-label-ui text-on-surface-variant mb-1.5" for="name">Name</label>
+            <input id="name" type="text" autocomplete="name" placeholder="Ada Lovelace" class="w-full bg-surface-container-lowest border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-3.5 py-2.5 text-on-surface placeholder:text-outline font-body-md text-body-md"/>
+          </div>
+          <div>
+            <label class="block font-label-ui text-label-ui text-on-surface-variant mb-1.5" for="email">Email</label>
+            <input id="email" type="email" autocomplete="email" placeholder="you@company.com" class="w-full bg-surface-container-lowest border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-3.5 py-2.5 text-on-surface placeholder:text-outline font-body-md text-body-md"/>
+          </div>
+          <div>
+            <label class="block font-label-ui text-label-ui text-on-surface-variant mb-1.5" for="password">Password</label>
+            <div class="relative">
+              <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" class="w-full bg-surface-container-lowest border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg pl-3.5 pr-11 py-2.5 text-on-surface placeholder:text-outline font-body-md text-body-md"/>
+              <button type="button" id="toggle-pw" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-outline hover:text-primary transition-colors flex items-center" title="Show / hide password">
+                <span class="material-symbols-outlined text-body-lg" id="pw-icon">visibility</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="error" class="hidden items-start gap-2 bg-error-container/30 border border-error/40 text-error rounded-lg px-3 py-2.5 font-body-sm text-body-sm">
+            <span class="material-symbols-outlined text-body-md">error</span><span id="error-text"></span>
+          </div>
+
+          <button type="submit" id="submit" class="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-inverse-primary to-secondary-container hover:from-primary-container hover:to-primary text-on-primary font-headline-md text-headline-md flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(56,189,248,0.35)] transition-all duration-200 active:scale-95">
+            <span id="submit-label">Sign in</span>
+            <span class="material-symbols-outlined text-headline-md">arrow_forward</span>
+          </button>
+        </form>
+
+        <p class="mt-6 font-label-code text-label-code text-outline tracking-wider flex items-center gap-2">
+          <span class="material-symbols-outlined text-label-ui text-primary">verified</span>
+          Accounts are stored locally in this browser.
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="auth.js"></script>
+<script>
+  if (Auth.redirectIfAuthed()) { /* already signed in */ }
+  const $ = id => document.getElementById(id);
+  let mode = new URLSearchParams(location.search).get("mode") === "signup" ? "signup" : "login";
+
+  function setMode(m) {
+    mode = m;
+    const signup = m === "signup";
+    $("name-wrap").classList.toggle("hidden", !signup);
+    $("eyebrow").textContent = signup ? "GET STARTED" : "WELCOME BACK";
+    $("title").textContent = signup ? "Create your account" : "Sign in to Recall";
+    $("subtitle").textContent = signup ? "Give your engineering team a memory." : "Pick up where your engineering memory left off.";
+    $("submit-label").textContent = signup ? "Create account" : "Sign in";
+    $("password").autocomplete = signup ? "new-password" : "current-password";
+    const on = "bg-surface-container-high text-primary border border-primary/40";
+    const off = "text-on-surface-variant hover:text-on-surface border border-transparent";
+    $("tab-login").className = "py-2 rounded-lg transition-all " + (signup ? off : on);
+    $("tab-signup").className = "py-2 rounded-lg transition-all " + (signup ? on : off);
+    showError("");
+  }
+  function showError(msg) {
+    $("error").classList.toggle("hidden", !msg);
+    $("error").classList.toggle("flex", !!msg);
+    $("error-text").textContent = msg;
+  }
+  $("tab-login").onclick = () => setMode("login");
+  $("tab-signup").onclick = () => setMode("signup");
+  $("toggle-pw").onclick = () => {
+    const show = $("password").type === "password";
+    $("password").type = show ? "text" : "password";
+    $("pw-icon").textContent = show ? "visibility_off" : "visibility";
+  };
+
+  $("auth-form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const name = $("name").value, email = $("email").value, pw = $("password").value;
+    if (mode === "signup" && !name.trim()) return showError("Please enter your name.");
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) return showError("Please enter a valid email address.");
+    if (pw.length < 6) return showError("Password must be at least 6 characters.");
+    $("submit").disabled = true; $("submit").classList.add("opacity-70");
+    try {
+      if (mode === "signup") await Auth.signup(name, email, pw); else await Auth.login(email, pw);
+      location.href = "chat.html";
+    } catch (err) {
+      showError(err.message);
+      $("submit").disabled = false; $("submit").classList.remove("opacity-70");
+    }
+  });
+  setMode(mode);
+</script>
+</body></html>

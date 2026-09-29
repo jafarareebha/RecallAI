@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Recall — Chat</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="theme.js"></script>
+<style>
+  @keyframes pulseGlow { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:.65;transform:scale(1.05)} }
+  @keyframes blink { 0%,80%,100%{opacity:.25} 40%{opacity:1} }
+  .pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
+  .dot { animation: blink 1.2s infinite; } .dot:nth-child(2){animation-delay:.2s} .dot:nth-child(3){animation-delay:.4s}
+  .scroll-thin::-webkit-scrollbar{width:8px;height:8px} .scroll-thin::-webkit-scrollbar-thumb{background:#273647;border-radius:8px}
+  .scroll-thin::-webkit-scrollbar-track{background:transparent}
+  .md p{margin:0 0 .75rem} .md p:last-child{margin-bottom:0}
+  .md ul,.md ol{margin:0 0 .75rem 1.25rem} .md ul{list-style:disc} .md ol{list-style:decimal} .md li{margin:.15rem 0}
+  .md h1,.md h2,.md h3{font-family:'Plus Jakarta Sans';font-weight:600;color:#d4e4fa;margin:1rem 0 .5rem}
+  .md h1{font-size:20px} .md h2{font-size:17px} .md h3{font-size:15px}
+  .md a{color:#8ed5ff;text-decoration:underline}
+</style>
+</head>
+<body class="bg-surface text-on-surface antialiased selection:bg-primary selection:text-on-primary h-screen relative overflow-hidden font-body-md text-body-md">
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+  <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-primary/10 rounded-full blur-[140px] pulse-glow"></div>
+  <div class="absolute top-[35%] -left-32 w-[550px] h-[450px] bg-secondary-container/15 rounded-full blur-[130px]"></div>
+  <div class="absolute top-[65%] -right-32 w-[600px] h-[500px] bg-primary-container/10 rounded-full blur-[140px]"></div>
+</div>
+
+<header class="bg-surface/80 backdrop-blur-md text-primary fixed z-50 border-b border-outline-variant/30 w-full">
+  <div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+    <a class="text-headline-md font-headline-md text-on-surface tracking-tight flex items-center gap-2 group" href="index.html">
+      <img alt="Recall Brand Logo" class="w-8 h-8 rounded-lg object-contain border border-outline-variant/40 group-hover:border-primary transition-colors" src="https://lh3.googleusercontent.com/aida/AEtjO1UADCkZu2Po5obfV2Bd3Bf97v35CsEBbYdhmI5Uu_FUhDty4HE6zSLLSgvWo-jn-rukqDnNiPiuZf_UeS-DBZXPcJTqU9RgHVoSlraXN_1MGEX9xRirf7iYR4jiUcvN2dq8J1vIazjmZIUcsfZDDc_q4vZ7XADcWGTP93YVEzkGx1k_WwWmXTj-_BB4S-8y7rS4GDoellqrrpX6YEA_KhSA-5pSHzcEOFKV29FLrYKWRIXb_vZZgif1K-nd"/>
+      <span class="tracking-tight text-on-surface">Recall</span>
+      <span class="font-label-code text-label-code bg-surface-container-high px-1.5 py-0.5 rounded border border-outline-variant/30 text-primary">v0.9</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-8">
+     <!-- <a class="text-on-surface-variant font-body-md text-body-md transition-colors hover:text-primary" href="index.html#memory">Memory</a>
+      <a class="text-on-surface-variant font-body-md text-body-md transition-colors hover:text-primary" href="index.html#debugging">Debugging</a>
+      <a class="text-on-surface-variant font-body-md text-body-md transition-colors hover:text-primary" href="index.html#incidents">Incidents</a>
+      <a class="text-primary font-body-md text-body-md" href="chat.html">Chat</a>-->
+    </nav>
+    <div class="flex items-center gap-3">
+      <span id="user-chip" class="hidden sm:flex items-center gap-1.5 font-label-code text-label-code text-outline bg-surface-container px-3 py-1.5 rounded-lg border border-outline-variant/30">
+        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span><span id="user-name"></span>
+      </span>
+      <button id="open-settings" aria-label="Settings" class="p-2 rounded-lg text-on-surface-variant hover:text-on-surface bg-surface-container-high/60 border border-outline-variant/40 hover:border-outline transition-all active:scale-95 flex items-center">
+        <span class="material-symbols-outlined text-body-lg">tune</span>
+      </button>
+      <!-- Logout button is injected here by auth.js -->
+    </div>
+  </div>
+</header>
+
+<main class="relative z-10 h-full pt-[73px] flex">
+  <!-- Sidebar -->
+  <aside id="sidebar" class="hidden md:flex flex-col w-72 shrink-0 border-r border-outline-variant/30 bg-surface-container-lowest/60 backdrop-blur-md max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:pt-[73px]">
+    <div class="p-4">
+      <button id="new-chat" class="w-full px-4 py-2.5 rounded-lg bg-surface-container-high text-on-surface border border-outline-variant/50 hover:border-primary-container transition-all active:scale-95 flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.15)] font-body-md text-body-md font-medium">
+        <span class="material-symbols-outlined text-body-lg text-primary">add</span> New chat
+      </button>
+    </div>
+    <div class="px-4 pb-2 font-label-code text-label-code text-outline tracking-widest uppercase">Memory log</div>
+    <div id="chat-list" class="flex-1 overflow-y-auto scroll-thin px-2 pb-4 space-y-1"></div>
+  </aside>
+
+  <!-- Chat column -->
+  <section class="flex-1 min-w-0 flex flex-col">
+    <div class="md:hidden flex items-center gap-2 px-4 py-2 border-b border-outline-variant/20">
+      <button id="toggle-sidebar" class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary flex items-center"><span class="material-symbols-outlined">menu</span></button>
+      <span id="mobile-title" class="font-label-code text-label-code text-outline truncate">New chat</span>
+    </div>
+
+
+    <div id="messages" class="flex-1 overflow-y-auto scroll-thin px-4 py-8">
+      <div id="thread" class="max-w-3xl mx-auto space-y-6"></div>
+    </div>
+
+    <div class="px-4 pb-5 pt-2">
+      <div class="max-w-3xl mx-auto">
+        <div class="bg-surface-container-lowest/80 border border-outline-variant/40 focus-within:border-primary/60 rounded-xl p-2 backdrop-blur-xl shadow-2xl flex items-end gap-2 transition-colors">
+          <textarea id="input" rows="1" placeholder="Ask about a decision, a bug, or an incident…" class="flex-1 resize-none bg-transparent border-0 focus:ring-0 text-on-surface placeholder:text-outline font-body-md text-body-md max-h-48 py-2.5 px-3"></textarea>
+          <button id="send" title="Send" class="shrink-0 w-10 h-10 rounded-lg bg-gradient-to-r from-inverse-primary to-secondary-container hover:from-primary-container hover:to-primary text-on-primary flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.35)] transition-all active:scale-95">
+            <span class="material-symbols-outlined" id="send-icon">arrow_upward</span>
+          </button>
+        </div>
+        <p class="mt-2 text-center font-label-code text-label-code text-outline">Enter to send • Shift+Enter for a new line • Recall can make mistakes — verify critical answers.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Settings modal -->
+<div id="modal" class="hidden fixed inset-0 z-[60] items-center justify-center bg-surface-container-lowest/80 backdrop-blur-sm px-4">
+  <div class="w-full max-w-md bg-gradient-to-b from-surface-container-high to-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-2xl">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2"><span class="material-symbols-outlined text-primary">tune</span>Settings</h3>
+      <button id="close-settings" class="p-1 text-outline hover:text-primary flex items-center"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <label for="mem-toggle" class="block font-label-ui text-label-ui text-on-surface mb-0.5">Hindsight memory</label>
+        <p class="font-body-sm text-body-sm text-outline">Recall remembers useful past conversations, errors and fixes, and uses them when a new question is related.</p>
+      </div>
+      <input id="mem-toggle" type="checkbox" class="mt-1 h-5 w-5 shrink-0 rounded border-outline-variant/60 bg-surface-container-lowest text-primary-container focus:ring-primary cursor-pointer"/>
+    </div>
+    <div class="mt-5 flex items-center justify-between gap-3 rounded-lg border border-outline-variant/30 bg-surface-container-lowest/60 px-3.5 py-3">
+      <span id="mem-count" class="font-body-sm text-body-sm text-on-surface-variant">Checking memory…</span>
+      <button id="clear-memory" class="px-3 py-1.5 rounded-lg border border-outline-variant/50 text-on-surface-variant hover:text-error hover:border-error transition-all active:scale-95 font-body-sm text-body-sm">Clear memories</button>
+    </div>
+    <div class="flex justify-end gap-2 mt-6">
+      <button id="save-settings" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-inverse-primary to-secondary-container hover:from-primary-container hover:to-primary text-on-primary font-body-md text-body-md font-semibold transition-all active:scale-95">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<script>
+if (!Auth.requireAuth()) throw new Error("redirecting");
+const $ = id => document.getElementById(id);
+const me = Auth.session();
+$("user-name").textContent = me.name || me.email;
+$("user-chip").classList.remove("hidden");
+
+/* ---------- settings (memory only — the AI provider is configured on the server) ---------- */
+const cfg = window.RECALL_CONFIG || {};
+const API = (cfg.API_BASE || "").replace(/\/$/, "");
+const SKEY = "recall_settings";
+const stored = () => { try { return JSON.parse(localStorage.getItem(SKEY)) || {}; } catch { return {}; } };
+const memoryOn = () => stored().memory !== false;
+const apiHeaders = () => ({ "Content-Type": "application/json", "X-Recall-User": me.email });
+async function refreshMemCount() {
+  const el = $("mem-count");
+  try {
+    const r = await fetch(API + "/api/memory/stats", { headers: { "X-Recall-User": me.email } });
+    const j = await r.json();
+    el.textContent = j.count === 1 ? "1 memory stored" : j.count + " memories stored";
+  } catch { el.textContent = "Memory status unavailable"; }
+}
+function openSettings() { $("mem-toggle").checked = memoryOn(); $("modal").classList.remove("hidden"); $("modal").classList.add("flex"); refreshMemCount(); }
+function closeSettings() { $("modal").classList.add("hidden"); $("modal").classList.remove("flex"); }
+$("open-settings").onclick = openSettings;
+$("close-settings").onclick = closeSettings;
+$("modal").addEventListener("click", e => { if (e.target === $("modal")) closeSettings(); });
+$("save-settings").onclick = () => {
+  localStorage.setItem(SKEY, JSON.stringify({ ...stored(), memory: $("mem-toggle").checked }));
+  closeSettings();
+};
+$("clear-memory").onclick = async () => {
+  if (!confirm("Delete everything Recall has remembered about you? This cannot be undone.")) return;
+  try { await fetch(API + "/api/memory", { method: "DELETE", headers: { "X-Recall-User": me.email } }); } catch {}
+  refreshMemCount();
+};
+
+/* ---------- markdown ---------- */
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function inline(s) {
+  return s
+    .replace(/`([^`\n]+)`/g, '<code class="font-code-inline text-code-inline bg-surface-container-high text-primary px-1.5 py-0.5 rounded border border-outline-variant/30">$1</code>')
+    .replace(/\*\*([^*\n]+)\*\*/g, "<strong class='text-on-surface font-semibold'>$1</strong>")
+    .replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>")
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+}
+function md(src) {
+  const blocks = [];
+  let s = src.replace(/```([\w+-]*)[ \t]*\n?([\s\S]*?)(```|$)/g, (_, lang, code) => { blocks.push({ lang, code: code.replace(/\n$/, "") }); return "\n\u0000B" + (blocks.length - 1) + "\u0000\n"; });
+  s = esc(s);
+  const out = []; let list = null, para = [];
+  const flushP = () => { if (para.length) { out.push("<p>" + inline(para.join("<br>")) + "</p>"); para = []; } };
+  const flushL = () => { if (list) { out.push(`<${list.t}>${list.items.map(i => "<li>" + inline(i) + "</li>").join("")}</${list.t}>`); list = null; } };
+  for (const line of s.split("\n")) {
+    let m;
+    if ((m = line.match(/^\u0000B(\d+)\u0000$/))) {
+      flushP(); flushL();
+      const b = blocks[+m[1]];
+      out.push(`<div class="my-3 bg-surface-container-lowest border border-outline-variant/30 rounded-lg overflow-hidden"><div class="flex items-center justify-between px-3 py-1.5 border-b border-outline-variant/20 font-label-code text-label-code text-outline"><span>${esc(b.lang || "code")}</span><button class="copy-code flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-body-sm">content_copy</span><span>Copy</span></button></div><pre class="scroll-thin overflow-x-auto p-3 font-code-block text-code-block text-on-surface-variant"><code>${esc(b.code)}</code></pre></div>`);
+    } else if ((m = line.match(/^(#{1,3})\s+(.*)$/))) { flushP(); flushL(); out.push(`<h${m[1].length}>${inline(m[2])}</h${m[1].length}>`); }
+    else if ((m = line.match(/^\s*[-*]\s+(.*)$/))) { flushP(); if (!list || list.t !== "ul") { flushL(); list = { t: "ul", items: [] }; } list.items.push(m[1]); }
+    else if ((m = line.match(/^\s*\d+[.)]\s+(.*)$/))) { flushP(); if (!list || list.t !== "ol") { flushL(); list = { t: "ol", items: [] }; } list.items.push(m[1]); }
+    else if (!line.trim()) { flushP(); flushL(); }
+    else { flushL(); para.push(line); }
+  }
+  flushP(); flushL();
+  return out.join("");
+}
+
+/* Replies that use a memory start with "RELATED MEMORY · NN% RELEVANCE": style that label and the section labels. */
+function mdMem(text) {
+  const html = md(text);
+  if (!/^\s*RELATED MEMORY ·/.test(text)) return html;
+  return html
+    .replace(/^<p>(RELATED MEMORY · \d+% RELEVANCE)<\/p>/, '<p class="font-label-code text-label-code tracking-widest text-primary">$1</p>')
+    .replace(/<p>(Connection|Previous solution|Current solution):/g, "<p><strong class='text-on-surface font-semibold'>$1:</strong>");
+}
+
+/* ---------- chat state ---------- */
+const CKEY = "recall_chats_" + me.email;
+let chats = []; try { chats = JSON.parse(localStorage.getItem(CKEY)) || []; } catch {}
+let currentId = null, controller = null, streaming = false;
+const save = () => { try { localStorage.setItem(CKEY, JSON.stringify(chats.slice(0, 50))); } catch {} };
+const current = () => chats.find(c => c.id === currentId);
+
+function newChat() {
+  if (streaming) return;
+  const c = { id: Date.now().toString(36), title: "New chat", messages: [], updated: Date.now() };
+  chats.unshift(c); currentId = c.id; renderAll(); $("input").focus();
+}
+function renderList() {
+  $("chat-list").innerHTML = chats.map(c => `
+    <div data-id="${c.id}" class="chat-item group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer border ${c.id === currentId ? "bg-surface-container-high border-primary/40 text-on-surface" : "border-transparent text-on-surface-variant hover:bg-surface-container hover:text-on-surface"}">
+      <span class="material-symbols-outlined text-body-lg ${c.id === currentId ? "text-primary" : "text-outline"}">chat_bubble</span>
+      <span class="flex-1 truncate font-body-md text-body-md">${esc(c.title)}</span>
+      <button data-del="${c.id}" class="opacity-0 group-hover:opacity-100 text-outline hover:text-error transition-all flex items-center" title="Delete"><span class="material-symbols-outlined text-body-lg">delete</span></button>
+    </div>`).join("") || '<p class="px-3 py-2 font-body-sm text-body-sm text-outline">No conversations yet.</p>';
+  $("mobile-title").textContent = current()?.title || "New chat";
+}
+$("chat-list").addEventListener("click", e => {
+  const del = e.target.closest("[data-del]");
+  if (del) { if (streaming) return; chats = chats.filter(c => c.id !== del.dataset.del); if (currentId === del.dataset.del) currentId = chats[0]?.id || null; save(); if (!currentId) newChat(); else renderAll(); return; }
+  const it = e.target.closest(".chat-item");
+  if (it && !streaming) { currentId = it.dataset.id; renderAll(); $("sidebar").classList.add("hidden", "md:flex"); }
+});
+$("new-chat").onclick = newChat;
+$("toggle-sidebar").onclick = () => $("sidebar").classList.toggle("hidden");
+
+const SUGGESTIONS = [
+  ["bug_report", "Help me debug", "Why would a Go worker pool deadlock when a mutex is held across a channel send?"],
+  ["account_tree", "Log a decision", "Draft an ADR for replacing an in-memory cache with a Redis cluster."],
+  ["security", "Write a post-mortem", "Give me a blameless post-mortem template for a SEV-1 outage."],
+  ["psychology", "Explain trade-offs", "PostgreSQL + pgvector vs a dedicated vector database — when should I pick which?"]
+];
+const userBubble = t => `<div class="flex justify-end"><div class="max-w-[85%] bg-surface-container-high border border-outline-variant/40 rounded-xl px-4 py-3 text-on-surface whitespace-pre-wrap break-words">${esc(t)}</div></div>`;
+const memNote = mem => mem && mem.used ? `<div class="mt-2 flex items-center gap-1 font-label-code text-label-code text-outline"><span class="material-symbols-outlined text-body-sm">subdirectory_arrow_right</span>Used ${mem.count} relevant ${mem.count === 1 ? "memory" : "memories"}</div>` : "";
+const botBubble = (html, i, mem) => `<div class="flex gap-3"><div class="shrink-0 w-8 h-8 rounded-lg bg-primary-container/20 border border-primary/40 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-body-lg">psychology</span></div><div class="min-w-0 flex-1"><div data-bot="${i}" class="md text-on-surface-variant font-body-lg text-body-lg pt-0.5 break-words">${html}</div>${memNote(mem)}</div></div>`;
+const typing = '<span class="inline-flex gap-1 items-center h-6"><span class="dot w-1.5 h-1.5 rounded-full bg-primary"></span><span class="dot w-1.5 h-1.5 rounded-full bg-primary"></span><span class="dot w-1.5 h-1.5 rounded-full bg-primary"></span></span>';
+
+function renderMessages() {
+  const c = current();
+  if (!c.messages.length) {
+    $("thread").innerHTML = `<div class="text-center pt-8 md:pt-16 flex flex-col items-center">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container-high/70 border border-outline-variant/50 backdrop-blur-md mb-6"><span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span><span class="font-label-ui text-label-ui text-on-surface-variant">Autonomous Engineering Memory</span></div>
+      <h1 class="text-display-lg-mobile md:text-display-lg font-display-lg text-on-surface tracking-tight mb-4">What should we <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary-container to-secondary">recall?</span></h1>
+      <p class="text-body-lg font-body-lg text-on-surface-variant max-w-xl mb-10">Ask about decisions, debugging, and incidents. Recall answers with the reasoning behind them.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">${SUGGESTIONS.map(([ic, t, q]) => `
+        <button data-q="${esc(q)}" class="suggest text-left bg-surface-container/40 hover:bg-surface-container/70 border border-outline-variant/30 hover:border-primary/50 rounded-xl p-4 transition-all duration-300">
+          <div class="flex items-center gap-2 mb-1 font-headline-md text-headline-md text-on-surface"><span class="material-symbols-outlined text-primary">${ic}</span>${t}</div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">${esc(q)}</p></button>`).join("")}</div></div>`;
+    return;
+  }
+  $("thread").innerHTML = c.messages.map((m, i) => m.role === "user" ? userBubble(m.text) : botBubble(m.error ? `<span class="text-error">${esc(m.text)}</span>` : (m.text ? mdMem(m.text) : typing), i, m.mem)).join("");
+  scrollDown(true);
+}
+function renderAll() { renderList(); renderMessages(); }
+$("thread").addEventListener("click", e => {
+  const s = e.target.closest(".suggest"); if (s) return send(s.dataset.q);
+  const b = e.target.closest(".copy-code");
+  if (b) { navigator.clipboard.writeText(b.closest(".my-3").querySelector("code").textContent); const l = b.lastElementChild; l.textContent = "Copied"; setTimeout(() => l.textContent = "Copy", 1500); }
+});
+function scrollDown(force) { const m = $("messages"); if (force || m.scrollHeight - m.scrollTop - m.clientHeight < 140) m.scrollTop = m.scrollHeight; }
+
+/* ---------- chat (backend streaming) ---------- */
+function setStreaming(on) {
+  streaming = on; $("send-icon").textContent = on ? "stop" : "arrow_upward"; $("send").title = on ? "Stop" : "Send";
+}
+async function send(text) {
+  text = (text ?? $("input").value).trim();
+  if (!text || streaming) return;
+  const c = current();
+  if (!c.messages.length) c.title = text.length > 40 ? text.slice(0, 40) + "…" : text;
+  const history = c.messages.filter(m => !m.error && m.text).map(m => ({ role: m.role === "user" ? "user" : "assistant", text: m.text }));
+  c.messages.push({ role: "user", text }); c.updated = Date.now();
+  const bot = { role: "model", text: "" }; c.messages.push(bot);
+  $("input").value = ""; autosize(); renderAll(); setStreaming(true);
+  const idx = c.messages.length - 1;
+  const el = () => document.querySelector(`[data-bot="${idx}"]`);
+
+  controller = new AbortController();
+  let raf = 0;
+  const paint = () => { raf = 0; const e = el(); if (e) { e.innerHTML = bot.text ? mdMem(bot.text) : typing; scrollDown(); } };
+  try {
+    const res = await fetch(API + "/api/chat", {
+      method: "POST", signal: controller.signal, headers: apiHeaders(),
+      body: JSON.stringify({ message: text, session_id: c.id, history: history.slice(-12), stream: true, use_memory: memoryOn() })
+    });
+    if (!res.ok) {
+      let msg = "Something went wrong. Please try again.";
+      try { msg = (await res.json()).error || msg; } catch {}
+      throw new Error(msg);
+    }
+    const reader = res.body.getReader(), dec = new TextDecoder(); let buf = "", failure = "";
+    while (true) {
+      const { value, done } = await reader.read(); if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const lines = buf.split("\n"); buf = lines.pop();
+      for (const ln of lines) {
+        if (!ln.startsWith("data:")) continue;
+        let j; try { j = JSON.parse(ln.slice(5).trim()); } catch { continue; }
+        if (j.type === "meta") { if (j.memory_used) { bot.mem = { used: true, count: j.memories_retrieved }; renderAll(); } }
+        else if (j.type === "delta") { bot.text += j.text; if (!raf) raf = requestAnimationFrame(paint); }
+        else if (j.type === "error") failure = j.message;
+      }
+    }
+    if (!bot.text) throw new Error(failure || "The assistant returned an empty response. Please try again.");
+  } catch (err) {
+    if (err.name === "AbortError") { if (!bot.text) c.messages.pop(); }
+    else { bot.error = true; bot.mem = null; bot.text = err instanceof TypeError ? "Can't reach the Recall server. Make sure it is running and try again." : err.message; }
+  } finally {
+    if (raf) cancelAnimationFrame(raf);
+    controller = null; setStreaming(false); c.updated = Date.now(); save(); renderAll();
+  }
+}
+$("send").onclick = () => streaming ? controller?.abort() : send();
+$("input").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); } });
+function autosize() { const t = $("input"); t.style.height = "auto"; t.style.height = Math.min(t.scrollHeight, 192) + "px"; }
+$("input").addEventListener("input", autosize);
+
+/* ---------- init ---------- */
+if (!chats.length) newChat(); else { currentId = chats[0].id; renderAll(); }
+</script>
+</body></html>

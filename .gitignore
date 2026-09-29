@@ -1,0 +1,15 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# dependencies / data
+node_modules/
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# misc
+.DS_Store
+*.log
